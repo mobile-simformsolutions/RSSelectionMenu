@@ -1,7 +1,7 @@
 //
 //  RSSelectionMenuExtensions.swift
 //
-//  Copyright (c) 2017 Rushi Sangani
+//  Copyright (c) 2018 Rushi Sangani
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -39,6 +39,8 @@ public enum PresentationStyle {
     case Push
     case Popover(sourceView: UIView, size: CGSize?)
     case Formsheet
+    case Alert(title: String?, action: String?, height: Double?)
+    case Actionsheet(title: String?, action: String?, height: Double?)
 }
 
 // MARK: - CellType
@@ -76,7 +78,7 @@ extension UITableViewCell {
 // MARK: - NavigationBar
 public struct NavigationBarTheme {
     var title: String?
-    var attributes: [NSAttributedStringKey: Any]?
+    var attributes: [NSAttributedString.Key: Any]?
     var color: UIColor?
     var tintColor: UIColor?
 }
@@ -129,19 +131,19 @@ extension RSSelectionMenu {
                 fatalError("NSObject subclass must implement UniqueProperty protocol or specify an uniquePropertyName to identify each object uniquely.")
             }
             
-            let dictionary = (object as! NSObject).toDictionary()
             let key = (T.self is UniqueProperty.Type) ? (object as! UniqueProperty).uniquePropertyName() : uniquePropertyName!
-            
+            let dictionary: [String: Any] = (object is Decodable) ? (object as! Decodable).toDictionary() : (object as! NSObject).toDictionary()
+
             return hasSameValue(forKey: key, object: dictionary, inArray: from)
         }
     }
     
     /// dictionary key value comparision
-    public func hasSameValue<T>(forKey key: String, object: [String: AnyObject], inArray: DataSource<T>) -> Int? {
+    public func hasSameValue<T>(forKey key: String, object: [String: Any], inArray: DataSource<T>) -> Int? {
         let value = String(describing: object[key])
         
         return inArray.index(where: { (data) -> Bool in
-            let dictionary = (data as! NSObject).toDictionary()
+            let dictionary = (data is Decodable) ? (data as! Decodable).toDictionary() : (data as! NSObject).toDictionary()
             return value == String(describing: dictionary[key])
         })
     }

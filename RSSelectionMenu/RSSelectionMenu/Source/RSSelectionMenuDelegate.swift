@@ -1,7 +1,7 @@
 //
 //  RSSelectionMenuDelegate.swift
 //
-//  Copyright (c) 2017 Rushi Sangani
+//  Copyright (c) 2018 Rushi Sangani
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -37,6 +37,9 @@ open class RSSelectionMenuDelegate<T>: NSObject, UITableViewDelegate {
     /// selected objects
     var selectedObjects = DataSource<T>()
     
+    /// maximum selection limit
+    var maxSelectedLimit: UInt?
+    
     // MARK: - Initialize
     convenience init(selectedItems: DataSource<T>) {
         self.init()
@@ -44,6 +47,11 @@ open class RSSelectionMenuDelegate<T>: NSObject, UITableViewDelegate {
     }
     
     // MARK:- UITableViewDelegate
+    
+    public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let searchBar = isSearchbarAdded(tableView).1
+        return searchBar
+    }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
@@ -74,6 +82,10 @@ open class RSSelectionMenuDelegate<T>: NSObject, UITableViewDelegate {
         
         // dismiss if required
         selectionTableView.dismissControllerIfRequired()
+    }
+    
+    public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return isSearchbarAdded(tableView).0 ? defaultHeaderHeight : 1
     }
 }
 
@@ -106,14 +118,11 @@ extension RSSelectionMenuDelegate {
         if let selectedIndex = tableView.selectionMenu?.isSelected(object: object, from: selectedObjects) {
             selectedObjects.remove(at: selectedIndex)
         }
-        else {
-            if maxSelectionCount != nil, maxSelectionCount! <= selectedObjects.count  {
-
-            } else {
-                selectedObjects.append(object)
-                isSelected = true
-            }
-
+        
+        // check if selected items reached to max limit, if specified
+        else if maxSelectionCount == nil, maxSelectedLimit == nil || selectedObjects.count < maxSelectedLimit! {
+            selectedObjects.append(object)
+            isSelected = true
         }
         
         // reload tableview
@@ -158,6 +167,15 @@ extension RSSelectionMenuDelegate {
             rowSelection.selected = selected!
             rowSelection.delegate!((rowSelection.rowType?.value)!, selected!)
         }
+    }
+    
+    /// checks if searchbar is added
+    fileprivate func isSearchbarAdded(_ tableView: UITableView) -> (Bool, UISearchBar?) {
+        let selectionTableView = tableView as! RSSelectionTableView<T>
+        if let searchBar = selectionTableView.searchControllerDelegate?.searchBar {
+            return (true, searchBar)
+        }
+        return (false, nil)
     }
 }
 

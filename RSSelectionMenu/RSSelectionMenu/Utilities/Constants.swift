@@ -1,7 +1,7 @@
 //
 //  Constants.swift
 //
-//  Copyright (c) 2017 Rushi Sangani
+//  Copyright (c) 2018 Rushi Sangani
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -48,6 +48,8 @@ public typealias UISearchBarResult<T> = ((_ searchText: String) -> (FilteredData
 /// SearchBar CancelButton
 public typealias SearchBarCancelButtonAttributes = (title: String, tintColor: UIColor?)
 
+/// Keys
+public let contentViewController       = "contentViewController"
 
 /// Strings
 public let defaultPlaceHolder          = "Search"
@@ -56,3 +58,6 @@ public let doneButtonTitle             = "Done"
 
 /// Colors
 public let defaultSearchBarTintColor   = UIColor(white: 0.9, alpha: 0.9)
+
+/// Constants
+public let defaultHeaderHeight         = CGFloat(50)
