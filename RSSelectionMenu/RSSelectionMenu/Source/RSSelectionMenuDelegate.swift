@@ -120,7 +120,7 @@ extension RSSelectionMenuDelegate {
         }
         
         // check if selected items reached to max limit, if specified
-        else if maxSelectionCount != nil, maxSelectedLimit != nil || selectedObjects.count < maxSelectedLimit! {
+        else if maxSelectionCount != nil, maxSelectedLimit != nil || selectedObjects.count < maxSelectionCount! {
             selectedObjects.append(object)
             isSelected = true
         }
