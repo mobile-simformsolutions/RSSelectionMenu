@@ -24,7 +24,7 @@ extension ViewController {
         }
         
         // add first row as All
-        
+        selectionMenu.maxSelectionCount = 3
         let allSelected = (simpleSelectedArray.count == 0)
         selectionMenu.addFirstRowAs(rowType: .All, showSelected: allSelected) { (text, selected) in
             
